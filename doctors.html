@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skin Cancer AI - Doctors</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #06363D, #085558);
+      font-family: 'Orbitron', sans-serif;
+      color: #E0EDE9;
+    }
+    video#bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.65) contrast(1.25);
+      animation: scanline 8s infinite;
+    }
+    @keyframes scanline {
+      0%, 100% { filter: brightness(0.65) contrast(1.25); }
+      50% { filter: brightness(0.8) contrast(1.35); }
+    }
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(13, 111, 115, 0.4), rgba(132, 186, 191, 0.4));
+      z-index: -1;
+      opacity: 0.5;
+      animation: overlayPulse 7s infinite;
+    }
+    @keyframes overlayPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.7; }
+    }
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 6rem 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .hero-text {
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 0 15px rgba(132, 186, 191, 0.4);
+      border: 1px solid rgba(132, 186, 191, 0.5);
+      text-shadow: 0 0 12px #0D6F73;
+      animation: textGlow 2s infinite alternate;
+    }
+    .header-glow {
+      animation: glow 1.8s infinite alternate;
+    }
+    @keyframes glow {
+      0% { box-shadow: 0 0 10px rgba(13, 111, 115, 0.7); }
+      100% { box-shadow: 0 0 20px rgba(13, 111, 115, 0.9); }
+    }
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #E0EDE9;
+      text-shadow: 0 0 12px rgba(13, 111, 115, 0.6);
+    }
+    .nav-link.active {
+      color: #84BABF;
+      text-shadow: 0 0 18px #0D6F73;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background: #84BABF;
+      box-shadow: 0 0 12px #0D6F73;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .nav-link:hover {
+      color: #84BABF;
+      text-shadow: 0 0 18px #0D6F73;
+    }
+    .doctor-card {
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #84BABF;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1rem;
+      max-width: 300px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(132, 186, 191, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: holoShimmer 3s infinite;
+    }
+    .doctor-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(13, 111, 115, 0.6);
+    }
+    @keyframes holoShimmer {
+      0% { box-shadow: 0 0 20px rgba(13, 111, 115, 0.7), 0 0 30px rgba(132, 186, 191, 0.5); }
+      50% { box-shadow: 0 0 30px rgba(13, 111, 115, 0.9), 0 0 40px rgba(132, 186, 191, 0.7); }
+      100% { box-shadow: 0 0 20px rgba(13, 111, 115, 0.7), 0 0 30px rgba(132, 186, 191, 0.5); }
+    }
+    .doctor-img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 2px solid #84BABF;
+      box-shadow: 0 0 10px rgba(13, 111, 115, 0.7);
+    }
+    .chat-button {
+      background: linear-gradient(45deg, #0D6F73, #84BABF);
+      color: #FFFFFF;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .chat-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(13, 111, 115, 0.7);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 20;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: rgba(6, 54, 61, 0.95);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #E0EDE9;
+      position: relative;
+      border: 2px solid #84BABF;
+      box-shadow: 0 0 30px rgba(13, 111, 115, 0.7), 0 0 50px rgba(132, 186, 191, 0.5);
+      animation: holoShimmer 3s infinite;
+    }
+    .close-button {
+      cursor: pointer;
+      color: #84BABF;
+      font-size: 1.5rem;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      transition: color 0.3s ease;
+    }
+    .close-button:hover {
+      color: #E0EDE9;
+    }
+    .chat-box {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .chat-message {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      border-radius: 4px;
+      color: #E0EDE9;
+    }
+    .user-message {
+      background: rgba(13, 111, 115, 0.2);
+      text-align: right;
+      border-radius: 1.5rem 1.5rem 0 1.5rem;
+    }
+    .bot-message {
+      background: rgba(132, 186, 191, 0.2);
+      border-radius: 1.5rem 1.5rem 1.5rem 0;
+    }
+    .chat-input {
+      background: #06363D;
+      border: 1px solid #84BABF;
+      color: #E0EDE9;
+      padding: 0.5rem;
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .send-button {
+      background: linear-gradient(45deg, #0D6F73, #84BABF);
+      color: #FFFFFF;
+      padding: 0.5rem 1.5rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .send-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(13, 111, 115, 0.7);
+    }
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #E0EDE9;
+      border-radius: 50%;
+      opacity: 0.9;
+      animation: float 10s infinite;
+      z-index: 0;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0.9; }
+      50% { opacity: 0.5; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+    .karnataka-map {
+      position: absolute;
+      bottom: 10%;
+      right: 10%;
+      width: 160px;
+      height: 160px;
+      opacity: 0.35;
+      background: url('/static/images/karnataka-map.png') no-repeat center;
+      background-size: contain;
+      animation: mapPulse 4s infinite;
+    }
+    @keyframes mapPulse {
+      0% { opacity: 0.35; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(1.06); }
+      100% { opacity: 0.35; transform: scale(1); }
+    }
+    .bidar-pin {
+      position: absolute;
+      bottom: 15%;
+      right: 15%;
+      width: 16px;
+      height: 16px;
+      background: #84BABF;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #0D6F73;
+      animation: pinGlow 1.8s infinite alternate;
+    }
+    @keyframes pinGlow {
+      0% { box-shadow: 0 0 12px #0D6F73; }
+      100% { box-shadow: 0 0 22px #0D6F73; }
+    }
+    @keyframes textGlow {
+      0% { box-shadow: 0 0 20px rgba(13, 111, 115, 0.7); }
+      100% { box-shadow: 0 0 30px rgba(13, 111, 115, 0.9); }
+    }
+    .footer-text {
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 0 10px rgba(132, 186, 191, 0.4);
+    }
+    .icon-spin {
+      animation: spin 2s infinite linear;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .appointment-section {
+      position: relative;
+      z-index: 1;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .appointment-card {
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem;
+      max-width: 600px;
+      text-align: left;
+      box-shadow: 0 0 15px rgba(132, 186, 191, 0.4);
+      border: 1px solid rgba(132, 186, 191, 0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: textGlow 2s infinite alternate;
+    }
+    .appointment-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 25px rgba(13, 111, 115, 0.6);
+    }
+    .appointment-card h2 {
+      color: #84BABF;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 12px #0D6F73;
+    }
+    .appointment-input {
+      color: #E0EDE9;
+      font-size: 1rem;
+      width: 100%;
+      background: #06363D;
+      border-radius: 8px;
+      padding: 0.5rem;
+      z-index: 15;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      pointer-events: auto;
+      border: 1px solid #84BABF;
+    }
+    .appointment-input:focus {
+      box-shadow: 0 0 10px rgba(13, 111, 115, 0.7);
+      transform: scale(1.02);
+      outline: none;
+    }
+    .submit-button {
+      background: linear-gradient(45deg, #0D6F73, #84BABF);
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 900;
+      color: #FFFFFF;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 15px rgba(13, 111, 115, 0.7);
+      z-index: 15;
+      pointer-events: auto;
+      animation: pulse 2s infinite;
+    }
+    .submit-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(13, 111, 115, 1);
+    }
+    .submit-button:active {
+      transform: scale(0.95);
+    }
+    .delete-button {
+      background: linear-gradient(45deg, #0D6F73, #84BABF);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 700;
+      color: #FFFFFF;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 15px rgba(13, 111, 115, 0.7);
+      z-index: 15;
+      pointer-events: auto;
+      animation: pulse 2s infinite;
+    }
+    .delete-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(13, 111, 115, 1);
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 15px rgba(13, 111, 115, 0.7); }
+      50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(13, 111, 115, 0.9); }
+      100% { transform: scale(1); box-shadow: 0 0 15px rgba(13, 111, 115, 0.7); }
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: #E0EDE9;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(13, 111, 115, 0.7);
+      z-index: 20;
+      display: none;
+      max-width: 90%;
+    }
+    .toast.success {
+      border: 2px solid #84BABF;
+    }
+    .toast.error {
+      border: 2px solid #FF3333;
+    }
+    .flatpickr-calendar {
+      z-index: 20 !important;
+      background: rgba(6, 54, 61, 0.95);
+      color: #E0EDE9;
+      border: 2px solid #84BABF;
+      box-shadow: 0 0 20px rgba(13, 111, 115, 0.7);
+    }
+    .flatpickr-day {
+      color: #E0EDE9;
+    }
+    .flatpickr-day:hover {
+      background: #84BABF;
+      color: #FFFFFF;
+    }
+    .flatpickr-day.selected {
+      background: #0D6F73;
+      border-color: #84BABF;
+      color: #FFFFFF;
+    }
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+      .doctor-card, .appointment-card {
+        max-width: 100%;
+        margin: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="https://v.ftcdn.net/02/83/03/82/700_F_283038233_nvVG6WSoZxlEuxGdWU6f7FD8JmZdZnjD_ST.mp4" type="video/mp4">
+    <img src="/static/images/fallback-skin-cancer.jpg" alt="Fallback Skin Cancer Image">
+  </video>
+  <div class="video-overlay"></div>
+  <div id="particles" class="absolute inset-0 z-0"></div>
+  <div class="karnataka-map">
+    <div class="bidar-pin"></div>
+  </div>
+
+  <header class="fixed top-0 left-0 w-full bg-[#06363D] bg-opacity-90 z-20 py-4 px-6 flex items-center justify-between header-glow">
+    <div class="flex items-center">
+      <div class="flex flex-col items-start">
+        <h1 class="text-lg font-bold text-[#E0EDE9] text-shadow: 0 0 12px rgba(13, 111, 115, 0.6);">Skin Cancer AI</h1>
+        <p class="text-sm text-[#E0EDE9]">Bidar’s Vision, Karnataka’s Future</p>
+      </div>
+    </div>
+    <nav class="flex space-x-4">
+      <a href="/" class="nav-link" aria-label="Home">Home</a>
+      <a href="/symptom-checker" class="nav-link" aria-label="Symptom Checker">Symptom Checker</a>
+      <a href="/prediction" class="nav-link" aria-label="Prediction">Prediction</a>
+      <a href="/dashboard" class="nav-link" aria-label="Dashboard">Dashboard</a>
+      <a href="/learning-center" class="nav-link" aria-label="Learning Center">Learning Center</a>
+      <a href="/community" class="nav-link" aria-label="Community">Community</a>
+      <a href="/doctors" class="nav-link active" aria-label="Doctors">Doctors</a>
+
+      <a href="/about" class="nav-link" aria-label="About">About</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight text-[#84BABF] hero-text">Meet Our Expert Doctors</h1>
+    <p class="text-md md:text-xl mb-6 max-w-3xl mx-auto text-[#E0EDE9] hero-text">Connect with top skin cancer specialists in Bidar for expert consultations and support.</p>
+
+    <div class="flex flex-wrap justify-center">
+      <div class="doctor-card" onmouseenter="playSound('hover')">
+        <img src="https://t4.ftcdn.net/jpg/06/32/90/79/360_F_632907942_M6CVHD1ivhUrWK1X49PkBlSH3ooNPsog.jpg" alt="Dr. Rajshekhar Kulkarni" class="doctor-img">
+        <h2 class="text-lg font-bold text-[#84BABF] mb-1">Dr. Rajshekhar Kulkarni</h2>
+        <p class="text-sm text-[#E0EDE9]">Dermatologist, MBBS, MD - Dermatology</p>
+        <p class="text-sm text-[#E0EDE9]">Bus Stand Road, Bidar, Karnataka</p>
+        <p class="text-sm text-[#0D6F73] mt-2">Available</p>
+        <button class="chat-button" onclick="openChatModal('Dr. Rajshekhar Kulkarni'); playSound('click')">Chat with Doctor</button>
+      </div>
+      <div class="doctor-card" onmouseenter="playSound('hover')">
+        <img src="https://thumbs.dreamstime.com/b/d-avatar-doctor-portrait-medical-uniform-white-background-327426936.jpg" alt="Dr. Somnath Patil" class="doctor-img">
+        <h2 class="text-lg font-bold text-[#84BABF] mb-1">Dr. Somnath Patil</h2>
+        <p class="text-sm text-[#E0EDE9]">Dermatologist, MBBS, MD</p>
+        <p class="text-sm text-[#E0EDE9]">Near Canara Bank, Bidar, Karnataka</p>
+        <p class="text-sm text-[#FF3333] mt-2">Busy</p>
+        <button class="chat-button" onclick="openChatModal('Dr. Somnath Patil'); playSound('click')">Chat with Doctor</button>
+      </div>
+      <div class="doctor-card" onmouseenter="playSound('hover')">
+        <img src="https://static.vecteezy.com/system/resources/previews/033/522/490/non_2x/cartoon-plasticine-3d-avatar-online-doctor-girl-isolated-on-white-background-photo.jpg" alt="Dr. Maheshwari Sajjanshetty" class="doctor-img">
+        <h2 class="text-lg font-bold text-[#84BABF] mb-1">Dr. Maheshwari Sajjanshetty</h2>
+        <p class="text-sm text-[#E0EDE9]">Dermatologist, MBBS, MD</p>
+        <p class="text-sm text-[#E0EDE9]">Ganesh Maidan Rd, Nandi Colony, Bidar, Karnataka</p>
+        <p class="text-sm text-[#0D6F73] mt-2">Available</p>
+        <button class="chat-button" onclick="openChatModal('Dr. Maheshwari Sajjanshetty'); playSound('click')">Chat with Doctor</button>
+      </div>
+      <div class="doctor-card" onmouseenter="playSound('hover')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKtzYMPW7YpiW9Zqw2fTb_0EvrI1WPRypRCA&s" alt="Dr. Vinaykumar" class="doctor-img">
+        <h2 class="text-lg font-bold text-[#84BABF] mb-1">Dr. Vinaykumar</h2>
+        <p class="text-sm text-[#E0EDE9]">General Physician, Cosmetologist, Trichologist, Dermatologist</p>
+        <p class="text-sm text-[#E0EDE9]">3 Years Experience (2 as Specialist), Bidar, Karnataka</p>
+        <p class="text-sm text-[#0D6F73] mt-2">Available</p>
+        <button class="chat-button" onclick="openChatModal('Dr. Vinaykumar'); playSound('click')">Chat with Doctor</button>
+      </div>
+      <div class="doctor-card" onmouseenter="playSound('hover')">
+        <img src="https://img.freepik.com/free-photo/portrait-3d-male-doctor_23-2151107083.jpg?semt=ais_hybrid&w=740" alt="Dr. Santhosh Rejintal" class="doctor-img">
+        <h2 class="text-lg font-bold text-[#84BABF] mb-1">Dr. Santhosh Rejintal</h2>
+        <p class="text-sm text-[#E0EDE9]">Laparoscopic Surgeon, MBBS, MD</p>
+        <p class="text-sm text-[#E0EDE9]">Vasu Hospital, Bidar, Karnataka</p>
+        <p class="text-sm text-[#FF3333] mt-2">Busy</p>
+        <button class="chat-button" onclick="openChatModal('Dr. Santhosh Rejintal'); playSound('click')">Chat with Doctor</button>
+      </div>
+      <div class="doctor-card" onmouseenter="playSound('hover')">
+        <img src="https://t4.ftcdn.net/jpg/06/14/96/05/360_F_614960515_mQsF7nS1r3qZ9eCHzqJ5cyCxmjsfJOCQ.jpg" alt="Dr. Swati Kamshetty" class="doctor-img">
+        <h2 class="text-lg font-bold text-[#84BABF] mb-1">Dr. Swati Kamshetty</h2>
+        <p class="text-sm text-[#E0EDE9]">General Physician, MBBS, MD</p>
+        <p class="text-sm text-[#E0EDE9]">Navjeevan Hospital, Bidar, Karnataka</p>
+        <p class="text-sm text-[#0D6F73] mt-2">Available</p>
+        <button class="chat-button" onclick="openChatModal('Dr. Swati Kamshetty'); playSound('click')">Chat with Doctor</button>
+      </div>
+    </div>
+
+    <div class="mt-8 text-lg text-[#84BABF] hero-text">
+      <p class="font-semibold">Proudly Serving Bidar & Karnataka</p>
+    </div>
+  </section>
+
+  <section class="appointment-section">
+    <h2 class="text-2xl font-bold text-[#84BABF] mb-4">Schedule Appointment</h2>
+    <div class="appointment-card mx-auto">
+      <form id="appointmentForm">
+        <div class="mb-4">
+          <label class="block text-sm text-[#E0EDE9] mb-1">Select Doctor</label>
+          <select id="doctorSelect" class="appointment-input" required tabindex="0">
+            <option value="Dr. Rajshekhar Kulkarni">Dr. Rajshekhar Kulkarni</option>
+            <option value="Dr. Somnath Patil">Dr. Somnath Patil</option>
+            <option value="Dr. Maheshwari Sajjanshetty">Dr. Maheshwari Sajjanshetty</option>
+            <option value="Dr. Vinaykumar">Dr. Vinaykumar</option>
+            <option value="Dr. Santhosh Rejintal">Dr. Santhosh Rejintal</option>
+            <option value="Dr. Swati Kamshetty">Dr. Swati Kamshetty</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm text-[#E0EDE9] mb-1">Select Date</label>
+          <input type="text" id="appointmentDate" class="appointment-input" placeholder="Pick a date" required tabindex="0">
+        </div>
+        <button type="submit" class="submit-button" onmouseenter="playSound('hover')" onclick="playSound('click')">Schedule</button>
+      </form>
+      <h3 class="text-lg font-bold text-[#84BABF] mt-4 mb-2">Upcoming Appointments</h3>
+      <ul id="appointmentList" class="text-sm text-[#E0EDE9]"></ul>
+      <div id="toast" class="toast"></div>
+    </div>
+  </section>
+
+  <div id="chatModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeChatModal(); playSound('click')">×</span>
+      <h2 class="text-xl font-bold text-[#84BABF] mb-3" id="chatDoctorName"></h2>
+      <div class="chat-box" id="messages"></div>
+      <div class="input-form">
+        <input type="text" id="msg" class="chat-input" placeholder="Type your message...">
+        <button id="sendChat" class="send-button" onclick="queueMessage(); playSound('click')">Send</button>
+      </div>
+      <p class="text-sm text-[#E0EDE9] mt-4">Disclaimer: Consult with a Doctor before making any decisions.</p>
+    </div>
+  </div>
+
+  <footer class="py-6 px-4 bg-[#06363D] text-center relative z-10">
+    <div class="max-w-6xl mx-auto">
+      <p class="text-md text-[#E0EDE9] mb-4 footer-text">Empowering Skin Cancer Care in Bidar & Karnataka</p>
+      <div class="flex justify-center space-x-6 mb-4">
+        <a href="#" class="text-[#E0EDE9] hover:text-[#84BABF]" onmouseenter="playSound('hover')">WhatsApp</a>
+        <a href="#" class="text-[#E0EDE9] hover:text-[#84BABF]" onmouseenter="playSound('hover')">Email</a>
+        <a href="#" class="text-[#E0EDE9] hover:text-[#84BABF]" onmouseenter="playSound('hover')">Helpline</a>
+      </div>
+      <div class="flex justify-center">
+        <input type="email" placeholder="Join our newsletter" class="p-2 rounded-l-md bg-[#06363D] text-[#E0EDE9] border border-[#84BABF] focus:outline-none">
+        <button class="p-2 bg-gradient-to-r from-[#0D6F73] to-[#84BABF] text-[#FFFFFF] rounded-r-md hover:shadow-lg hover:shadow-[#84BABF]/50" onmouseenter="playSound('hover')" onclick="playSound('click')">Join</button>
+      </div>
+      <p class="mt-4 text-sm text-[#E0EDE9] footer-text">© 2025 Skin Cancer AI</p>
+    </div>
+  </footer>
+
+  <audio id="clickSound" src="https://www.soundjay.com/buttons/button-09.mp3"></audio>
+  <audio id="hoverSound" src="https://www.soundjay.com/buttons/button-16.mp3"></audio>
+
+  <script>
+    // Particle Animation
+    function createParticles() {
+      const particleContainer = document.getElementById('particles');
+      for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.animationDelay = `${Math.random() * 10}s`;
+        particleContainer.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // GSAP Animations
+    gsap.from("header", { y: -100, opacity: 0, duration: 1, ease: "power2.out" });
+    gsap.from(".hero h1", { opacity: 0, y: -50, duration: 1.2, ease: "power2.out", delay: 0.5 });
+    gsap.from(".hero p", { opacity: 0, y: 50, duration: 1.2, ease: "power2.out", delay: 0.7 });
+    gsap.from(".nav-link", { opacity: 0, y: 20, duration: 0.8, stagger: 0.1, delay: 0.9, ease: "power2.out" });
+    gsap.from(".doctor-card", { opacity: 0, x: -50, duration: 0.8, stagger: 0.15, delay: 1, ease: "power2.out" });
+    gsap.from(".appointment-card", { opacity: 0, x: -50, duration: 0.8, delay: 1.2, ease: "power2.out" });
+
+    // Sound Effects
+    function playSound(type) {
+      const sound = document.getElementById(`${type}Sound`);
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+      if (navigator.vibrate) navigator.vibrate(50);
+    }
+
+    // Chat Modal
+    const modal = document.getElementById('chatModal');
+    const doctorName = document.getElementById('chatDoctorName');
+
+    function openChatModal(name) {
+      doctorName.textContent = `Chat with ${name}`;
+      document.getElementById('messages').innerHTML = '';
+      modal.style.display = 'flex';
+      gsap.from(".modal-content", { opacity: 0, scale: 0.7, duration: 0.8, ease: "back.out" });
+      playSound('click');
+      document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeChatModal() {
+      gsap.to(".modal-content", { opacity: 0, scale: 0.7, duration: 0.3, ease: "power2.in", onComplete: () => {
+        modal.style.display = 'none';
+      }});
+    }
+
+    // UPDATED API KEY & MODEL ONLY
+    const API_KEY = "AIzaSyDN8pTetLQrS3hP7dm-0_nQCnJiKipF-hw";
+    let requestQueue = [];
+    let isProcessing = false;
+    const MAX_RETRIES = 3;
+    const RATE_LIMIT_DELAY = 5000;
+
+    // Local fallback responses
+    const fallbackResponses = {
+      "hi": "Hello! How can I assist you with skin cancer concerns today?",
+      "hello": "Hi there! I'm here to help with any questions about skin cancer or to guide you to a specialist.",
+      "symptoms": "Common skin cancer symptoms include unusual moles, sores that don't heal, or changes in skin texture. For a detailed diagnosis, please consult one of our doctors.",
+      "appointment": "You can schedule an appointment using the form below. Select a doctor and date to book your consultation.",
+      "help": "I'm here to answer your questions about skin cancer or connect you with a specialist. Ask away!"
+    };
+
+    async function fetchWithRetry(prompt, retries = MAX_RETRIES, delay = RATE_LIMIT_DELAY) {
+      try {
+        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + API_KEY, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: prompt }]
+            }]
+          })
+        });
+
+        if (response.status === 429 && retries > 0) {
+          console.warn(`Rate limit hit, retrying after ${delay}ms... (${retries} retries left)`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return fetchWithRetry(prompt, retries - 1, delay * 2);
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Unable to fetch response right now, try again later.';
+      } catch (error) {
+        if (retries > 0) {
+          console.warn(`Error: ${error.message}, retrying after ${delay}ms... (${retries} retries left)`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return fetchWithRetry(prompt, retries - 1, delay * 2);
+        }
+        throw error;
+      }
+    }
+
+    async function processQueue() {
+      if (isProcessing || requestQueue.length === 0) return;
+
+      isProcessing = true;
+      const { message, messagesContainer } = requestQueue.shift();
+      const username = 'Guest';
+      messagesContainer.innerHTML += `<div class="chat-message user-message"><i class="fas fa-user mr-2 icon-spin"></i><strong>${username}:</strong> ${message}</div>`;
+      document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+
+      const lowercaseMessage = message.toLowerCase().trim();
+      if (fallbackResponses[lowercaseMessage]) {
+        messagesContainer.innerHTML += `<div class="chat-message bot-message"><i class="fas fa-robot mr-2 icon-spin"></i><strong>Skin Cancer AI Bot:</strong> ${fallbackResponses[lowercaseMessage]}</div>`;
+        document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+        isProcessing = false;
+        processQueue();
+        return;
+      }
+
+      try {
+        const botReply = await fetchWithRetry(message);
+        messagesContainer.innerHTML += `<div class="chat-message bot-message"><i class="fas fa-robot mr-2 icon-spin"></i><strong>Skin Cancer AI Bot:</strong> ${botReply}</div>`;
+        document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+      } catch (error) {
+        console.error('Error fetching response:', error);
+        messagesContainer.innerHTML += `<div class="chat-message bot-message"><i class="fas fa-robot mr-2 icon-spin"></i><strong>Skin Cancer AI Bot:</strong> Error: ${error.message}. Please try again later.</div>`;
+        document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+      }
+
+      isProcessing = false;
+      processQueue();
+    }
+
+    function queueMessage() {
+      const msgInput = document.getElementById('msg');
+      const message = msgInput.value.trim();
+      if (!message) return;
+
+      const messagesContainer = document.getElementById('messages');
+      msgInput.value = '';
+      requestQueue.push({ message, messagesContainer });
+      processQueue();
+    }
+
+    document.getElementById('msg').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        queueMessage();
+        playSound('click');
+      }
+    });
+
+    document.getElementById('sendChat').addEventListener('click', () => {
+      queueMessage();
+      playSound('click');
+    });
+
+    document.querySelector('.close-button').addEventListener('click', closeChatModal);
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) closeChatModal();
+    });
+
+    // Appointment Scheduler
+    let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+    flatpickr("#appointmentDate", {
+      enableTime: false,
+      dateFormat: "Y-m-d",
+      minDate: "today",
+      onOpen: function() {
+        console.log('Flatpickr calendar opened');
+      }
+    });
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.style.display = 'block';
+      gsap.fromTo(toast, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
+      setTimeout(() => {
+        gsap.to(toast, { opacity: 0, y: 50, duration: 0.5, ease: "power2.in", onComplete: () => {
+          toast.style.display = 'none';
+        } });
+      }, 5000);
+    }
+
+    function updateAppointments() {
+      const appointmentList = document.getElementById('appointmentList');
+      appointmentList.innerHTML = appointments.map((a, index) => `
+        <li class="flex justify-between items-center mb-2">
+          <span>${a.doctor} on ${a.date}</span>
+          <button class="delete-button" onclick="deleteAppointment(${index}); playSound('click')" onmouseenter="playSound('hover')">Delete</button>
+        </li>
+      `).join('');
+      console.log('Appointments updated:', appointments);
+    }
+
+    function deleteAppointment(index) {
+      const { doctor, date } = appointments[index];
+      appointments.splice(index, 1);
+      localStorage.setItem('appointments', JSON.stringify(appointments));
+      showToast(`Appointment with ${doctor} on ${date} deleted.`, 'success');
+      console.log('Appointment deleted:', { doctor, date });
+      updateAppointments();
+    }
+
+    document.getElementById('appointmentForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const doctor = document.getElementById('doctorSelect').value;
+      const date = document.getElementById('appointmentDate').value;
+      if (!date) {
+        showToast('Please select a date.', 'error');
+        console.log('Validation failed: No date selected');
+        return;
+      }
+
+      appointments.push({ doctor, date });
+      localStorage.setItem('appointments', JSON.stringify(appointments));
+      showToast(`Appointment scheduled with ${doctor} on ${date}!`, 'success');
+      console.log('Appointment saved:', { doctor, date });
+      updateAppointments();
+      document.getElementById('appointmentForm').reset();
+    });
+
+    // Initialize Appointments
+    window.addEventListener('load', () => {
+      console.log('Doctors page loaded, initial appointments:', appointments);
+      updateAppointments();
+    });
+
+    // Hover sound for links and buttons
+    document.querySelectorAll('.nav-link, .chat-button, .send-button, .submit-button, .delete-button').forEach(el => {
+      el.addEventListener('mouseenter', () => playSound('hover'));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skin Cancer AI - Skin Cancer Prediction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+Kannada:wght@400;700&family=Amiri:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #0A0F10, #1C2526);
+      font-family: 'Montserrat', sans-serif;
+    }
+    video#bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.7) contrast(1.2);
+      animation: scanline 10s infinite;
+    }
+    @keyframes scanline {
+      0%, 100% { filter: brightness(0.7) contrast(1.2); }
+      50% { filter: brightness(0.8) contrast(1.3); }
+    }
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(0, 212, 255, 0.2), rgba(249, 115, 22, 0.2));
+      z-index: -1;
+      opacity: 0.4;
+      animation: overlayPulse 8s infinite;
+    }
+    @keyframes overlayPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.6; }
+    }
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 6rem 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .hero-text {
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+      animation: textGlow 2s infinite alternate;
+    }
+    .header-glow {
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      0% { box-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
+      100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.8); }
+    }
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+      font-weight: 700;
+      z-index: 15;
+      color: #FFFFFF;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background: #00D4FF;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .nav-link:hover {
+      color: #00D4FF;
+    }
+    .cta-button {
+      background: linear-gradient(45deg, #00D4FF, #F97316);
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 900;
+      color: #FFFFFF;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+      z-index: 15;
+      pointer-events: auto;
+      animation: pulse 2s infinite;
+    }
+    .cta-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 1);
+    }
+    .cta-button:active {
+      transform: scale(0.95);
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 15px rgba(0, 212, 255, 0.6); }
+      50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 212, 255, 0.8); }
+    }
+    @keyframes textGlow {
+      0% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.6); }
+      100% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.8); }
+    }
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #10B981;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: float 12s infinite;
+      z-index: 0;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0.8; }
+      50% { opacity: 0.4; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+    .karnataka-map {
+      position: absolute;
+      bottom: 10%;
+      left: 10%;
+      width: 200px;
+      height: 200px;
+      opacity: 0.3;
+      background: url('/static/images/karnataka-map.png') no-repeat center;
+      background-size: contain;
+      animation: mapPulse 5s infinite;
+    }
+    @keyframes mapPulse {
+      0% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.05); }
+      100% { opacity: 0.3; transform: scale(1); }
+    }
+    .bidar-pin {
+      position: absolute;
+      bottom: 15%;
+      left: 15%;
+      width: 20px;
+      height: 20px;
+      background: #F97316;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #F97316;
+      animation: pinGlow 2s infinite alternate;
+    }
+    @keyframes pinGlow {
+      0% { box-shadow: 0 0 10px #F97316; }
+      100% { box-shadow: 0 0 20px #F97316; }
+    }
+    .upload-section {
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      animation: textGlow 2s infinite alternate;
+      z-index: 10;
+    }
+    .result-box {
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      animation: textGlow 2s infinite alternate;
+      z-index: 10;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 20;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 500px;
+      text-align: center;
+      color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+    .modal-content a {
+      color: #F97316;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+    }
+    .modal-content a:hover {
+      color: #00D4FF;
+    }
+    .close-button {
+      cursor: pointer;
+      color: #F97316;
+      font-size: 1.5rem;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      transition: color 0.3s ease;
+    }
+    .close-button:hover {
+      color: #00D4FF;
+    }
+    .skin-img {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .skin-img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="https://v.ftcdn.net/02/83/03/82/700_F_283038233_nvVG6WSoZxlEuxGdWU6f7FD8JmZdZnjD_ST.mp4" type="video/mp4">
+    <img src="/static/images/fallback-skin-cancer.jpg" alt="Fallback Skin Cancer Image">
+  </video>
+  <div class="video-overlay"></div>
+  <div class="karnataka-map">
+    <div class="bidar-pin"></div>
+  </div>
+
+  <header class="fixed top-0 left-0 w-full bg-[#0A0F10] bg-opacity-90 z-20 py-4 px-6 flex items-center justify-between header-glow">
+    <div class="flex flex-col items-start">
+      <h1 class="text-xl font-bold text-[#FFFFFF]">Skin Cancer AI</h1>
+      <p class="text-sm text-[#FFFFFF]">Bidar’s Pride, Karnataka’s Future</p>
+    </div>
+    <nav class="flex space-x-6">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/symptom-checker" class="nav-link">Symptom Checker</a>
+      <a href="/prediction" class="nav-link">Prediction</a>
+      <a href="/dashboard" class="nav-link">Dashboard</a>
+      <a href="/learning-center" class="nav-link">Learning Center</a>
+      <a href="/community" class="nav-link">Community</a>
+      <a href="/doctors" class="nav-link">Doctors</a>
+
+      <a href="/about" class="nav-link">About</a>
+    </nav>
+    <div class="language-toggle text-[#FFFFFF]">
+      <span data-lang="en">EN</span> | <span data-lang="kn">ಕ</span> | <span data-lang="ur">اردو</span> | <span data-lang="hi">हि</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div id="particles" class="absolute inset-0 z-0"></div>
+    <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight text-[#00D4FF] hero-text">
+      Skin Cancer Prediction
+    </h1>
+    <p class="text-md md:text-xl mb-6 max-w-3xl mx-auto text-[#FFFFFF] hero-text" data-lang="en">
+      Upload a skin image and provide your details to check for skin cancer risk using our AI model.
+    </p>
+    <p class="text-md md:text-xl mb-6 max-w-3xl mx-auto text-[#FFFFFF] hero-text hidden" data-lang="kn">
+      ಚರ್ಮದ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಒದಗಿಸಿ, ನಮ್ಮ AI ಮಾಡೆಲ್ ಬಳಸಿಕೊಂಡು ಚರ್ಮದ ಕ್ಯಾನ್ಸರ್ ಅಪಾಯವನ್ನು ಪರಿಶೀಲಿಸಿ.
+    </p>
+    <p class="text-md md:text-xl mb-6 max-w-3xl mx-auto text-[#FFFFFF] hero-text hidden" data-lang="ur">
+      جلد کی تصویر اپ لوڈ کریں اور اپنی تفصیلات فراہم کریں تاکہ ہمارے AI ماڈل کا استعمال کرتے ہوئے جلد کے کینسر کے خطرے کی جانچ کی جا سکے۔
+    </p>
+    <p class="text-md md:text-xl mb-6 max-w-3xl mx-auto text-[#FFFFFF] hero-text hidden" data-lang="hi">
+      त्वचा की छवि अपलोड करें और अपनी जानकारी प्रदान करें ताकि हमारे AI मॉडल का उपयोग करके त्वचा कैंसर के जोखिम की जाँच की जा सके।
+    </p>
+
+    <div class="upload-section">
+      <form method="post" action="/predict" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Full Name" class="mb-4 p-2 w-full bg-[#0A0F10] text-[#FFFFFF] rounded-md border border-[#00D4FF] focus:outline-none focus:ring-2 focus:ring-[#00D4FF] z-index: 15;" required>
+        <input type="number" name="age" placeholder="Age" class="mb-4 p-2 w-full bg-[#0A0F10] text-[#FFFFFF] rounded-md border border-[#00D4FF] focus:outline-none focus:ring-2 focus:ring-[#00D4FF] z-index: 15;" required>
+        <input type="text" name="city" placeholder="City" class="mb-4 p-2 w-full bg-[#0A0F10] text-[#FFFFFF] rounded-md border border-[#00D4FF] focus:outline-none focus:ring-2 focus:ring-[#00D4FF] z-index: 15;" required>
+        <input type="file" name="files[]" accept="image/*" multiple class="mb-4 p-2 w-full bg-[#0A0F10] text-[#FFFFFF] rounded-md border border-[#00D4FF] z-index: 15;" required>
+        <button type="submit" class="cta-button">Analyze Image</button>
+      </form>
+      {% if predictions %}
+      <div class="result-box">
+        <h2 class="text-xl font-bold text-[#00D4FF] mb-3">Prediction Results</h2>
+        {% for filename, label in predictions %}
+        <p class="text-[#FFFFFF] mb-2">Image: {{ filename }} - Skin Cancer Risk: {{ label }}</p>
+        {% endfor %}
+        {% if patient_data %}
+        <p class="text-[#FFFFFF] mt-2">Patient: {{ patient_data.name }}, Age: {{ patient_data.age }}, City: {{ patient_data.city }}</p>
+        {% endif %}
+        {% for filename, label in predictions %}
+        <img src="/Uploads/{{ filename }}" alt="Uploaded Image" class="mt-4 max-w-full rounded-md skin-img" onerror="this.src='/static/images/fallback-skin-cancer.jpg'; console.log('Image failed to load: /Uploads/{{ filename }}');">
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <div id="malignantModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">×</span>
+      <h2 class="text-xl font-bold text-[#00D4FF] mb-3">Emergency: Skin Cancer Risk Detected</h2>
+      <p class="text-[#FFFFFF] mb-4" data-lang="en">A potential risk of skin cancer has been detected in your image. Please consult a dermatologist immediately for further evaluation and treatment.</p>
+      <p class="text-[#FFFFFF] mb-4 hidden" data-lang="kn">ನಿಮ್ಮ ಚಿತ್ರದಲ್ಲಿ ಚರ್ಮದ ಕ್ಯಾನ್ಸರ್‌ನ ಸಂಭಾವ್ಯ ಅಪಾಯ ಕಂಡುಬಂದಿದೆ. ದಯವಿಟ್ಟು ತಕ್ಷಣವೇ ತದನಂತರದ ಮೌಲ್ಯಮಾಪನ ಮತ್ತು ಚಿಕಿತ್ಸೆಗಾಗಿ ಚರ್ಮರೋಗ ವೈದ್ಯರನ್ನು ಸಂಪರ್ಕಿಸಿ.</p>
+      <p class="text-[#FFFFFF] mb-4 hidden" data-lang="ur">آپ کی تصویر میں جلد کے کینسر کا ممکنہ خطرہ پایا گیا ہے۔ براہ کرم فوری طور پر مزید تشخیص اور علاج کے لیے جلد کے ڈاکٹر سے رجوع کریں۔</p>
+      <p class="text-[#FFFFFF] mb-4 hidden" data-lang="hi">आपकी छवि में त्वचा कैंसर का संभावित जोखिम पाया गया है। कृपया तत्काल आगे की जाँच और उपचार के लिए त्वचा विशेषज्ञ से संपर्क करें।</p>
+      <p class="text-[#FFFFFF] font-semibold">Consult these doctors from Bidar:</p>
+      <ul class="text-[#FFFFFF] list-disc list-inside mb-4">
+        <li>Dr. Rajshekhar Kulkarni, Dermatologist, MBBS, MD - Dermatology, Bus Stand Road, Bidar</li>
+        <li>Dr. Somnath Patil, Dermatologist, MBBS, MD, Near Canara Bank, Bidar</li>
+        <li>Dr. Maheshwari Sajjanshetty, Dermatologist, MBBS, MD, Ganesh Maidan Rd, Nandi Colony, Bidar, Karnataka 585401</li>
+        <li>Dr. Vinaykumar, General Physician, Cosmetologist, Trichologist, Dermatologist, MBBS, 3 Years Experience (2 years as specialist), Bidar</li>
+        <li>Dr. Santhosh Rejintal, Laparoscopic Surgeon, MBBS, MD, Vasu Hospital, Bidar</li>
+        <li>Dr. Swati Kamshetty, General Physician, MBBS, MD, Navjeevan Hospital, Bidar</li>
+      </ul>
+      <p class="text-[#FFFFFF]"><strong>Note:</strong> Contact doctors or hospitals directly for appointments and verify availability.</p>
+    </div>
+  </div>
+
+  <div id="benignModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">×</span>
+      <h2 class="text-xl font-bold text-[#00D4FF] mb-3">Advisory: Benign Result Detected</h2>
+      <p class="text-[#FFFFFF] mb-4" data-lang="en">Your image appears to be benign, but we recommend consulting a dermatologist for confirmation and routine monitoring.</p>
+      <p class="text-[#FFFFFF] mb-4 hidden" data-lang="kn">ನಿಮ್ಮ ಚಿತ್ರವು ಸೌಮ್ಯವಾಗಿದೆ ಎಂದು ಕಾಣುತ್ತದೆ, ಆದರೆ ಖಚಿತತೆಗಾಗಿ ಮತ್ತು ನಿಯಮಿತ ಗಮನಕ್ಕಾಗಿ ಚರ್ಮರೋಗ ವೈದ್ಯರನ್ನು ಸಂಪರ್ಕಿಸಲು ನಾವು ಶಿಫಾರಸು ಮಾಡುತ್ತೇವೆ.</p>
+      <p class="text-[#FFFFFF] mb-4 hidden" data-lang="ur">آپ کی تصویر سادہ لگتی ہے، لیکن ہم تصدیق اور معمول کی نگرانی کے لیے جلد کے ڈاکٹر سے رجوع کرنے کی تجویز دیتے ہیں۔</p>
+      <p class="text-[#FFFFFF] mb-4 hidden" data-lang="hi">आपकी छवि सौम्य प्रतीत होती है, लेकिन हम पुष्टि और नियमित निगरानी के लिए त्वचा विशेषज्ञ से संपर्क करने की सलाह देते हैं।</p>
+      <p class="text-[#FFFFFF] font-semibold">Consult these doctors from Bidar:</p>
+      <ul class="text-[#FFFFFF] list-disc list-inside mb-4">
+        <li>Dr. Rajshekhar Kulkarni, Dermatologist, MBBS, MD - Dermatology, Bus Stand Road, Bidar</li>
+        <li>Dr. Somnath Patil, Dermatologist, MBBS, MD, Near Canara Bank, Bidar</li>
+        <li>Dr. Maheshwari Sajjanshetty, Dermatologist, MBBS, MD, Ganesh Maidan Rd, Nandi Colony, Bidar, Karnataka 585401</li>
+        <li>Dr. Vinaykumar, General Physician, Cosmetologist, Trichologist, Dermatologist, MBBS, 3 Years Experience (2 years as specialist), Bidar</li>
+        <li>Dr. Santhosh Rejintal, Laparoscopic Surgeon, MBBS, MD, Vasu Hospital, Bidar</li>
+        <li>Dr. Swati Kamshetty, General Physician, MBBS, MD, Navjeevan Hospital, Bidar</li>
+      </ul>
+      <p class="text-[#FFFFFF]"><strong>Note:</strong> Contact doctors or hospitals directly for appointments and verify availability.</p>
+    </div>
+  </div>
+
+  <footer class="py-6 px-4 bg-[#0A0F10] text-center relative z-10">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex justify-center space-x-6 mb-4">
+        <a href="#" class="text-[#FFFFFF] hover:text-[#00D4FF]">WhatsApp</a>
+        <a href="#" class="text-[#FFFFFF] hover:text-[#00D4FF]">Email</a>
+        <a href="#" class="text-[#FFFFFF] hover:text-[#00D4FF]">Helpline</a>
+      </div>
+      <div class="flex justify-center">
+        <input type="email" placeholder="Join our newsletter" class="p-2 rounded-l-md bg-gray-800 text-[#FFFFFF] border-none focus:outline-none" tabindex="0">
+        <button class="p-2 bg-[#00D4FF] text-[#FFFFFF] rounded-r-md hover:bg-[#F97316]">Join</button>
+      </div>
+      <p class="mt-4 text-sm text-[#FFFFFF] hero-text">© 2025 Skin Cancer AI</p>
+    </div>
+  </footer>
+
+  <script>
+    // Particle Animation
+    const particleContainer = document.getElementById('particles');
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = `${Math.random() * 100}vw`;
+      particle.style.animationDelay = `${Math.random() * 12}s`;
+      particleContainer.appendChild(particle);
+    }
+
+    // GSAP Animations
+    gsap.from("header", { y: -100, opacity: 0, duration: 1, ease: "power2.out" });
+    gsap.from(".hero h1", { opacity: 0, y: -50, duration: 1.2, ease: "power2.out", delay: 0.5 });
+    gsap.from(".hero p", { opacity: 0, y: 50, duration: 1.2, ease: "power2.out", delay: 0.7 });
+    gsap.from(".nav-link", { opacity: 0, y: 20, duration: 0.8, stagger: 0.1, delay: 0.9, ease: "power2.out" });
+    gsap.from(".cta-button", { opacity: 0, scale: 0.8, duration: 0.8, delay: 1, ease: "back.out" });
+    gsap.from(".upload-section", { opacity: 0, y: 50, duration: 1, delay: 1.2, ease: "power2.out" });
+    gsap.from(".result-box", { opacity: 0, scale: 0.8, duration: 1, delay: 1.5, ease: "back.out" });
+
+    // Modal Logic
+    const malignantModal = document.getElementById('malignantModal');
+    const benignModal = document.getElementById('benignModal');
+    const closeButtons = document.querySelectorAll('.close-button');
+    const predictions = {{ predictions | tojson | safe }};
+    console.log("Predictions array:", predictions);
+
+    // Hide both modals initially
+    malignantModal.style.display = 'none';
+    benignModal.style.display = 'none';
+
+    if (predictions && predictions.length > 0) {
+      if (predictions.some(p => p[1] === 'Malignant')) {
+        console.log("Malignant skin cancer risk detected, showing emergency popup.");
+        malignantModal.style.display = 'flex';
+        gsap.from("#malignantModal .modal-content", { opacity: 0, scale: 0.7, duration: 0.8, ease: "back.out" });
+      } else if (predictions.some(p => p[1] === 'Benign')) {
+        console.log("Benign result detected, showing advisory popup.");
+        benignModal.style.display = 'flex';
+        gsap.from("#benignModal .modal-content", { opacity: 0, scale: 0.7, duration: 0.8, ease: "back.out" });
+      } else {
+        console.log("No valid predictions detected, both popups hidden.");
+      }
+    } else {
+      console.log("Predictions empty or initial load, both popups hidden.");
+    }
+
+    closeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        malignantModal.style.display = 'none';
+        benignModal.style.display = 'none';
+        console.log("Popup closed via close button.");
+      });
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === malignantModal) {
+        malignantModal.style.display = 'none';
+        console.log("Malignant popup closed by clicking outside.");
+      }
+      if (event.target === benignModal) {
+        benignModal.style.display = 'none';
+        console.log("Benign popup closed by clicking outside.");
+      }
+    });
+
+    // Language Toggle
+    const languageToggles = document.querySelectorAll('.language-toggle span');
+    const translatableElements = document.querySelectorAll('[data-lang]');
+    languageToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const lang = toggle.getAttribute('data-lang');
+        translatableElements.forEach(el => {
+          el.classList.toggle('hidden', el.getAttribute('data-lang') !== lang);
+        });
+        console.log('Language toggled to:', lang);
+      });
+    });
+  </script>
+</body>
+</html>
