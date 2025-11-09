@@ -1,521 +1,507 @@
-<div>
-<script type="text/javascript">
-var gk_isXlsx = false;
-var gk_xlsxFileLookup = {};
-var gk_fileData = {};
-function filledCell(cell) {
- return cell !== '' && cell != null;
-}
-function loadFileData(filename) {
- if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-  try {
-   var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-   var firstSheetName = workbook.SheetNames[0];
-   var worksheet = workbook.Sheets[firstSheetName];
-   var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-   var filteredData = jsonData.filter(row => row.some(filledCell));
-   var headerRowIndex = filteredData.findIndex((row, index) =>
-    row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-   );
-   if (headerRowIndex === -1 || headerRowIndex > 25) {
-    headerRowIndex = 0;
-   }
-   var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-   csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-   return csv;
-  } catch (e) {
-   console.error(e);
-   return "";
-  }
- }
- return gk_fileData[filename] || "";
-}
-</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Skin Cancer AI - Bidar's Skin Care Revolution</title>
- <script src="https://cdn.tailwindcss.com"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
- <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+Kannada:wght@400;700&family=Amiri:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
- <style>
-  body {
-   margin: 0;
-   overflow-x: hidden;
-   background: linear-gradient(to bottom, #06363D, #085558);
-   font-family: 'Orbitron', 'Noto Sans Kannada', 'Amiri', 'Noto Sans Devanagari', sans-serif;
-   color: #E0EDE9;
-  }
-  video#bg-video {
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100vw;
-   height: 100vh;
-   object-fit: cover;
-   z-index: -1;
-   filter: brightness(0.65) contrast(1.25);
-   animation: scanline 8s infinite;
-  }
-  @keyframes scanline {
-   0%, 100% { filter: brightness(0.65) contrast(1.25); }
-   50% { filter: brightness(0.8) contrast(1.35); }
-  }
-  .video-overlay {
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100vw;
-   height: 100vh;
-   background: linear-gradient(45deg, rgba(13, 111, 115, 0.4), rgba(132, 186, 191, 0.4));
-   z-index: -1;
-   opacity: 0.5;
-   animation: overlayPulse 7s infinite;
-  }
-  @keyframes overlayPulse {
-   0%, 100% { opacity: 0.5; }
-   50% { opacity: 0.7; }
-  }
-  .hero {
-   position: relative;
-   z-index: 1;
-   min-height: 100vh;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: flex-start;
-   text-align: left;
-   padding: 6rem 2rem 2rem;
-  }
-  .multilingual-text {
-   font-size: 0.9rem;
-   line-height: 1.3rem;
-   font-weight: 900;
-   color: #E0EDE9;
-   text-shadow: 0 0 12px #0D6F73;
-   letter-spacing: 1px;
-   border: 1px solid rgba(132, 186, 191, 0.5);
-   padding: 0.5rem 1rem;
-   border-radius: 8px;
-   background: rgba(0, 0, 0, 0.75);
-   margin: 0.5rem 0;
-   margin-top: 12rem;
-   max-width: 80%;
-  }
-  @media (min-width: 768px) {
-   .multilingual-text {
-    font-size: 1.2rem;
-    line-height: 1.8rem;
-   }
-  }
-  .nav-link {
-   position: relative;
-   transition: color 0.3s ease;
-   font-weight: 700;
-   color: #E0EDE9;
-   text-shadow: 0 0 12px rgba(13, 111, 115, 0.6);
-  }
-  .nav-link.active {
-   color: #84BABF;
-   text-shadow: 0 0 18px #0D6F73;
-  }
-  .nav-link::after {
-   content: '';
-   position: absolute;
-   width: 0;
-   height: 2px;
-   bottom: -2px;
-   left: 0;
-   background: #84BABF;
-   box-shadow: 0 0 12px #0D6F73;
-   transition: width 0.3s ease;
-  }
-  .nav-link:hover::after {
-   width: 100%;
-  }
-  .nav-link:hover {
-   color: #84BABF;
-   text-shadow: 0 0 18px #0D6F73;
-  }
-  .cta-button {
-   background: linear-gradient(45deg, #0D6F73, #84BABF);
-   padding: 0.8rem 1.5rem;
-   border-radius: 50px;
-   font-weight: 900;
-   color: #FFFFFF;
-   text-decoration: none;
-   transition: transform 0.3s ease, box-shadow 0.3s ease;
-   box-shadow: 0 0 20px rgba(13, 111, 115, 0.7);
-   animation: neonPulse 1.8s infinite alternate;
-  }
-  @keyframes neonPulse {
-   0% { box-shadow: 0 0 20px rgba(13, 111, 115, 0.7), 0 0 30px rgba(132, 186, 191, 0.6); }
-   100% { box-shadow: 0 0 30px rgba(13, 111, 115, 0.9), 0 0 40px rgba(132, 186, 191, 0.8); }
-  }
-  .cta-button:hover {
-   transform: scale(1.1);
-   box-shadow: 0 0 35px rgba(13, 111, 115, 1);
-  }
-  .header-glow {
-   animation: neonPulse 1.8s infinite alternate;
-  }
-  .particle {
-   position: absolute;
-   width: 6px;
-   height: 6px;
-   background: #E0EDE9;
-   border-radius: 50%;
-   opacity: 0.9;
-   animation: float 10s infinite;
-   z-index: 0;
-  }
-  @keyframes float {
-   0% { transform: translateY(0); opacity: 0.9; }
-   50% { opacity: 0.5; }
-   100% { transform: translateY(-100vh); opacity: 0; }
-  }
-  .karnataka-map {
-   position: absolute;
-   bottom: 10%;
-   right: 10%;
-   width: 160px;
-   height: 160px;
-   opacity: 0.35;
-   background: url('/static/images/karnataka-map.png') no-repeat center;
-   background-size: contain;
-   animation: mapPulse 4s infinite;
-  }
-  @keyframes mapPulse {
-   0% { opacity: 0.35; transform: scale(1); }
-   50% { opacity: 0.55; transform: scale(1.06); }
-   100% { opacity: 0.35; transform: scale(1); }
-  }
-  .bidar-pin {
-   position: absolute;
-   bottom: 15%;
-   right: 15%;
-   width: 16px;
-   height: 16px;
-   background: #84BABF;
-   border-radius: 50%;
-   box-shadow: 0 0 12px #0D6F73;
-   animation: pinGlow 1.8s infinite alternate;
-  }
-  @keyframes pinGlow {
-   0% { box-shadow: 0 0 12px #0D6F73; }
-   100% { box-shadow: 0 0 22px #0D6F73; }
-  }
-  .feature-card {
-   background: rgba(0, 0, 0, 0.85);
-   border-radius: 12px;
-   padding: 1rem;
-   margin: 1rem;
-   max-width: 280px;
-   text-align: center;
-   box-shadow: 0 0 12px rgba(132, 186, 191, 0.4);
-   transition: transform 0.3s ease, box-shadow 0.3s ease;
-   border: 1px solid rgba(132, 186, 191, 0.5);
-  }
-  .feature-card:hover {
-   transform: translateY(-12px);
-   box-shadow: 0 0 25px rgba(13, 111, 115, 0.6);
-  }
-  .feature-card h3 {
-   color: #E0EDE9;
-   font-weight: 700;
-   margin-bottom: 0.5rem;
-   text-shadow: 0 0 10px rgba(13, 111, 115, 0.7);
-   font-size: 1.2rem;
-  }
-  .feature-card p {
-   color: #FFFFFF;
-   font-size: 0.85rem;
-  }
-  .feature-card a {
-   color: #84BABF;
-   font-weight: 700;
-   transition: color 0.3s ease;
-   text-shadow: 0 0 6px rgba(13, 111, 115, 0.6);
-  }
-  .feature-card a:hover {
-   color: #0D6F73;
-   text-shadow: 0 0 12px rgba(13, 111, 115, 0.8);
-  }
-  .content-section {
-   position: relative;
-   z-index: 1;
-   padding: 2rem 1rem;
-   background: rgba(0, 0, 0, 0.85);
-   border-top: 1px solid rgba(132, 186, 191, 0.5);
-  }
-  .language-toggle span {
-   cursor: pointer;
-   margin: 0 0.5rem;
-   font-weight: 700;
-   color: #E0EDE9;
-   text-shadow: 0 0 6px rgba(13, 111, 115, 0.6);
-   transition: color 0.3s ease;
-  }
-  .language-toggle span:hover {
-   color: #84BABF;
-   text-shadow: 0 0 12px #0D6F73;
-  }
-  footer {
-   background: #06363D;
-  }
-  footer input {
-   background: #085558;
-   color: #E0EDE9;
-  }
-  footer button {
-   background: #0D6F73;
-  }
-  footer button:hover {
-   background: #84BABF;
-   box-shadow: 0 0 20px rgba(13, 111, 115, 0.8);
-  }
- </style>
-</head>
-<body>
- <video id="bg-video" autoplay muted loop playsinline>
-  <source src="https://v.ftcdn.net/02/83/03/82/700_F_283038233_nvVG6WSoZxlEuxGdWU6f7FD8JmZdZnjD_ST.mp4" type="video/mp4">
-  <img src="/static/images/fallback-skin-cancer.jpg" alt="Fallback Skin Cancer Image">
- </video>
- <div class="video-overlay"></div>
- <div class="karnataka-map">
-  <div class="bidar-pin"></div>
- </div>
-
- <header class="fixed top-0 left-0 w-full bg-[#06363D] bg-opacity-90 z-20 py-4 px-6 flex items-center justify-between header-glow">
-  <div class="flex items-center">
-   <div class="flex flex-col items-start">
-    <h1 class="text-lg font-bold text-[#E0EDE9]">Skin Cancer AI</h1>
-    <p class="text-sm text-[#E0EDE9]" id="header-tagline">
-     <span data-lang="en">Bidar’s Vision, Karnataka’s Future</span>
-     <span data-lang="kn" class="hidden">ಬೀದರ್‌ನ ದೃಷ್ಟಿ, ಕರ್ನಾಟಕದ ಭವಿಷ್ಯ</span>
-     <span data-lang="ur" class="hidden">بیدر کا وژن، کرناٹک کا مستقبل</span>
-     <span data-lang="hi" class="hidden">बीदर का दृष्टिकोण, कर्नाटक का भविष्य</span>
-    </p>
-   </div>
-  </div>
-  <nav class="flex space-x-4">
-   <a href="/" class="nav-link active" aria-label="Home">Home</a>
-   <a href="/symptom-checker" class="nav-link" aria-label="Symptom Checker">Symptom Checker</a>
-   <a href="/prediction" class="nav-link" aria-label="Prediction">Prediction</a>
-   <a href="/dashboard" class="nav-link" aria-label="Dashboard">Dashboard</a>
-   <a href="/learning-center" class="nav-link" aria-label="Learning Center">Learning Center</a>
-   <a href="/community" class="nav-link" aria-label="Community">Community</a>
-   <a href="/doctors" class="nav-link" aria-label="Doctors">Doctors</a>
-   <a href="/about" class="nav-link" aria-label="About">About</a>
-  </nav>
-  <div class="language-toggle">
-   <span data-lang="en" aria-label="English">EN</span> |
-   <span data-lang="kn" aria-label="Kannada">ಕ</span> |
-   <span data-lang="ur" aria-label="Urdu">اردو</span> |
-   <span data-lang="hi" aria-label="Hindi">हि</span>
-  </div>
- </header>
-
- <section class="hero">
-  <div id="particles" class="absolute inset-0 z-0"></div>
-  <div class="multilingual-text" id="multilingual-text">
-   <span data-lang="en">Gen AI Powered Skin Cancer Detection Using Deep Learning, Empowering Skin Care Solutions in Bidar</span>
-   <span data-lang="kn" class="hidden">ಜನ್ AI ಚಾಲಿತ ಚರ್ಮ ಕ್ಯಾನ್ಸರ್ ಪತ್ತೆ ಆಳವಾದ ಕಲಿಕೆಯನ್ನು ಬಳಸಿಕೊಂಡು, ಬೀದರ್‌ನಲ್ಲಿ ಚರ್ಮ ರಕ್ಷಣೆ ಪರಿಹಾರಗಳನ್ನು ಸಶಕ್ತಗೊಳಿಸುವುದು</span>
-   <span data-lang="ur" class="hidden">جین اے آئی سے چلنے والی جلد کے کینسر کی تشخیص ڈیپ لرننگ کا استعمال کرتے ہوئے، بیدر میں جلد کی دیکھ بھال کے حل کو بااختیار بنانا</span>
-   <span data-lang="hi" class="hidden">जेन एआई संचालित त्वचा कैंसर का पता लगाने में डीप लर्निंग का उपयोग, बीदर में त्वचा देखभाल समाधान को सशक्त करना</span>
-  </div>
-  <a href="/symptom-checker" class="cta-button text-[#FFFFFF] text-base" aria-label="Check Symptoms Now">
-   <span data-lang="en">Check Symptoms Now</span>
-   <span data-lang="kn" class="hidden">ಈಗ ರೋಗಲಕ್ಷಣಗಳನ್ನು ಪರಿಶೀಲಿಸಿ</span>
-   <span data-lang="ur" class="hidden">اب علامات چیک کریں</span>
-   <span data-lang="hi" class="hidden">अब लक्षणों की जाँच करें</span>
-  </a>
- </section>
-
- <section class="content-section">
-  <div class="max-w-6xl mx-auto flex flex-wrap justify-center">
-   <div class="feature-card">
-    <h3 data-lang="en">Symptom Checker</h3>
-    <h3 data-lang="kn" class="hidden">ಲಕ್ಷಣ ಪರಿಶೀಲಕ</h3>
-    <h3 data-lang="ur" class="hidden">علامات چیکر</h3>
-    <h3 data-lang="hi" class="hidden">लक्षण जांचकर्ता</h3>
-    <p data-lang="en">Assess skin cancer symptoms in seconds with AI-driven inputs, tailored for Karnataka.</p>
-    <p data-lang="kn" class="hidden">ಕರ್ನಾಟಕಕ್ಕೆ ತಕ್ಕಂತೆ AI-ಚಾಲಿತ ಒಳಸೇರಿಕೆಗಳೊಂದಿಗೆ ಚರ್ಮ ಕ್ಯಾನ್ಸರ್ ಲಕ್ಷಣಗಳನ್ನು ಸೆಕೆಂಡುಗಳಲ್ಲಿ ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ.</p>
-    <p data-lang="ur" class="hidden">کرناٹک کے لئے تیار کردہ AI سے چلنے والے ان پٹس کے ساتھ سیکنڈوں میں جلد کے کینسر کی علامات کا جائزہ لیں۔</p>
-    <p data-lang="hi" class="hidden">कर्नाटक के लिए अनुकूलित AI-चालित इनपुट के साथ सेकंडों में त्वचा कैंसर के लक्षणों का आकलन करें।</p>
-    <a href="/symptom-checker" class="text-[#84BABF] hover:text-[#0D6F73] text-sm font-bold" aria-label="Check Symptoms">Check Symptoms</a>
-   </div>
-   <div class="feature-card">
-    <h3 data-lang="en">Prediction</h3>
-    <h3 data-lang="kn" class="hidden">ಭವಿಷ್ಯವಾಣಿ</h3>
-    <h3 data-lang="ur" class="hidden">پیش گوئی</h3>
-    <h3 data-lang="hi" class="hidden">भविष्यवाणी</h3>
-    <p data-lang="en">Predict skin cancer severity with our deep learning model, trusted by Bidar residents.</p>
-    <p data-lang="kn" class="hidden">ಬೀದರ್ ನಿವಾಸಿಗಳಿಂದ ವಿಶ್ವಾಸಾರ್ಹವಾದ ನಮ್ಮ ಆಳವಾದ ಕಲಿಕೆ ಮಾದರಿಯೊಂದಿಗೆ ಚರ್ಮ ಕ್ಯಾನ್ಸರ್ ತೀವ್ರತೆಯನ್ನು ಭವಿಷ್ಯವಾಣಿಸಿ.</p>
-    <p data-lang="ur" class="hidden">بیدر کے رہائشیوں کی طرف سے قابل اعتماد ہمارے ڈیپ لرننگ ماڈل کے ساتھ جلد کے کینسر کی شدت کی پیش گوئی کریں۔</p>
-    <p data-lang="hi" class="hidden">बीदर निवासियों द्वारा भरोसा किए गए हमारे डीप लर्निंग मॉडल के साथ त्वचा कैंसर की गंभीरता की भविष्यवाणी करें।</p>
-    <a href="/prediction" class="text-[#84BABF] hover:text-[#0D6F73] text-sm font-bold" aria-label="Predict Now">Predict Now</a>
-   </div>
-   <div class="feature-card">
-    <h3 data-lang="en">Dashboard</h3>
-    <h3 data-lang="kn" class="hidden">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್</h3>
-    <h3 data-lang="ur" class="hidden">ڈیش بورڈ</h3>
-    <h3 data-lang="hi" class="hidden">डैशबोर्ड</h3>
-    <p data-lang="en">Monitor your skin health journey with a personalized dashboard for Karnataka users.</p>
-    <p data-lang="kn" class="hidden">ಕರ್ನಾಟಕ ಬಳಕೆದಾರರಿಗಾಗಿ ವೈಯಕ್ತಿಕಗೊಳಿಸಿದ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಚರ್ಮ ಆರೋಗ್ಯ ಪಯಣವನ್ನು ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ.</p>
-    <p data-lang="ur" class="hidden">کرناٹک صارفین کے لئے ذاتی ڈیش بورڈ کے ساتھ اپنے جلد کی صحت کے سفر کی نگرانی کریں۔</p>
-    <p data-lang="hi" class="hidden">कर्नाटक उपयोगकर्ताओं के लिए व्यक्तिगत डैशबोर्ड के साथ अपनी त्वचा स्वास्थ्य यात्रा की निगरानी करें।</p>
-    <a href="/dashboard" class="text-[#84BABF] hover:text-[#0D6F73] text-sm font-bold" aria-label="View Dashboard">View Dashboard</a>
-   </div>
-   <div class="feature-card">
-    <h3 data-lang="en">Learning Center</h3>
-    <h3 data-lang="kn" class="hidden">ಕಲಿಕೆ ಕೇಂದ್ರ</h3>
-    <h3 data-lang="ur" class="hidden">تعلیمی مرکز</h3>
-    <h3 data-lang="hi" class="hidden">शिक्षण केंद्र</h3>
-    <p data-lang="en">Access skin cancer resources and tips curated for Bidar and Karnataka.</p>
-    <p data-lang="kn" class="hidden">ಬೀದರ್ ಮತ್ತು ಕರ್ನಾಟಕಕ್ಕಾಗಿ ಆಯ್ದ ಚರ್ಮ ಕ್ಯಾನ್ಸರ್ ಸಂಪನ್ಮೂಲಗಳು ಮತ್ತು ಸಲಹೆಗಳನ್ನು ಪ್ರವೇಶಿಸಿ.</p>
-    <p data-lang="ur" class="hidden">بیدر اور کرناٹک کے لئے منتخب کردہ جلد کے کینسر وسائل اور تجاویز تک رسائی حاصل کریں۔</p>
-    <p data-lang="hi" class="hidden">बीदर और कर्नाटक के लिए चयनित त्वचा कैंसर संसाधनों और सुझावों तक पहुंचें।</p>
-    <a href="/learning-center" class="text-[#84BABF] hover:text-[#0D6F73] text-sm font-bold" aria-label="Learn More">Learn More</a>
-   </div>
-   <div class="feature-card">
-    <h3 data-lang="en">Community</h3>
-    <h3 data-lang="kn" class="hidden">ಸಮುದಾಯ</h3>
-    <h3 data-lang="ur" class="hidden">کمیونٹی</h3>
-    <h3 data-lang="hi" class="hidden">समुदाय</h3>
-    <p data-lang="en">Join Karnataka’s skin cancer community to share and learn from others.</p>
-    <p data-lang="kn" class="hidden">ಇತರರೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಲು ಮತ್ತು ಕಲಿಯಲು ಕರ್ನಾಟಕದ ಚರ್ಮ ಕ್ಯಾನ್ಸರ್ ಸಮುದಾಯಕ್ಕೆ ಸೇರಿಕೊಳ್ಳಿ.</p>
-    <p data-lang="ur" class="hidden">دوسروں کے ساتھ اشتراک اور سیکھنے کے لئے کرناٹک کی جلد کے کینسر کمیونٹی میں شامل ہوں۔</p>
-    <p data-lang="hi" class="hidden">दूसरों के साथ साझा करने और सीखने के लिए कर्नाटक के त्वचा कैंसर समुदाय में शामिल हों।</p>
-    <a href="/community" class="text-[#84BABF] hover:text-[#0D6F73] text-sm font-bold" aria-label="Join Community">Join Community</a>
-   </div>
-   <div class="feature-card">
-    <h3 data-lang="en">Doctors</h3>
-    <h3 data-lang="kn" class="hidden">ವೈದ್ಯರು</h3>
-    <h3 data-lang="ur" class="hidden">ڈاکٹرز</h3>
-    <h3 data-lang="hi" class="hidden">डॉक्टर</h3>
-    <p data-lang="en">Connect with top skin cancer specialists in Bidar for expert advice.</p>
-    <p data-lang="kn" class="hidden">ತಜ್ಞರ ಸಲಹೆಗಾಗಿ ಬೀದರ್‌ನಲ್ಲಿ ಉನ್ನತ ಚರ್ಮ ಕ್ಯಾನ್ಸರ್ ತಜ್ಞರೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಿ.</p>
-    <p data-lang="ur" class="hidden">ماہر مشورے کے لئے بیدر میں اعلیٰ جلد کے کینسر ماہرین سے رابطہ کریں۔</p>
-    <p data-lang="hi" class="hidden">विशेषज्ञ सलाह के लिए बीदर में शीर्ष त्वचा कैंसर विशेषज्ञों से संपर्क करें।</p>
-    <a href="/doctors" class="text-[#84BABF] hover:text-[#0D6F73] text-sm font-bold" aria-label="Find a Doctor">Find a Doctor</a>
-   </div>
-   <div class="feature-card">
-    <h3 data-lang="en">Health Tracker</h3>
-    <h3 data-lang="kn" class="hidden">ಆರೋಗ್ಯ ಟ್ರ್ಯಾಕರ್</h3>
-    <h3 data-lang="ur" class="hidden">صحت ٹریکر</h3>
-    <h3 data-lang="hi" class="hidden">स्वास्थ्य ट्रैकर</h3>
-    <p data-lang="en">Track your skin health progress with our AI-powered health tracker.</p>
-    <p data-lang="kn" class="hidden">ನಮ್ಮ AI-ಚಾಲಿತ ಆರೋಗ್ಯ ಟ್ರ್ಯಾಕರ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಚರ್ಮ ಆರೋಗ್ಯ ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.</p>
-    <p data-lang="ur" class="hidden">ہمارے AI سے چلنے والے صحت ٹریکر کے ساتھ اپنی جلد کی صحت کی ترقی کو ٹریک کریں۔</p>
-    <p data-lang="hi" class="hidden">हमारे AI-संचालित स्वास्थ्य ट्रैकर के साथ अपनी त्वचा स्वास्थ्य प्रगति को ट्रैक करें।</p>
-   </div>
-   <div class="feature-card">
-    <h3 data-lang="en">About</h3>
-    <h3 data-lang="kn" class="hidden">ಬಗ್ಗೆ</h3>
-    <h3 data-lang="ur" class="hidden">کے بارے میں</h3>
-    <h3 data-lang="hi" class="hidden">के बारे में</h3>
-    <p data-lang="en">Learn about our mission to empower skin cancer solutions in Bidar.</p>
-    <p data-lang="kn" class="hidden">ಬೀದರ್‌ನಲ್ಲಿ ಚರ್ಮ ಕ್ಯಾನ್ಸರ್ ಪರಿಹಾರಗಳನ್ನು ಸಶಕ್ತಗೊಳಿಸಲು ನಮ್ಮ ಧ್ಯೇಯದ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ.</p>
-    <p data-lang="ur" class="hidden">بیدر میں جلد کے کینسر حل کو بااختیار بنانے کے ہمارے مشن کے بارے میں جانیں۔</p>
-    <p data-lang="hi" class="hidden">बीदर में त्वचा कैंसर समाधान को सशक्त बनाने के हमारे मिशन के बारे में जानें।</p>
-    <a href="/about" class="text-[#84BABF] hover:text-[#0D6F73] text-sm font-bold" aria-label="About Us">About Us</a>
-   </div>
-  </div>
- </section>
-
- <footer class="py-6 px-4 text-center relative z-10">
-  <div class="max-w-6xl mx-auto">
-   <p class="text-md text-[#E0EDE9] mb-4 hero-text" data-lang="en">Empowering Skin Care Solutions in Bidar & Karnataka</p>
-   <p class="text-md text-[#E0EDE9] mb-4 hero-text hidden" data-lang="kn">ಬೀದರ್ ಮತ್ತು ಕರ್ನಾಟಕದಲ್ಲಿ ಚರ್ಮ ರಕ್ಷಣೆ ಪರಿಹಾರಗಳನ್ನು ಸಶಕ್ತಗೊಳಿಸುವುದು</p>
-   <p class="text-md text-[#E0EDE9] mb-4 hero-text hidden" data-lang="ur">بیدر اور کرناٹک میں جلد کی دیکھ بھال کے حل کو بااختیار بنانا</p>
-   <p class="text-md text-[#E0EDE9] mb-4 hero-text hidden" data-lang="hi">बीदर और कर्नाटक में त्वचा देखभाल समाधान को सशक्त बनाना</p>
-   <div class="flex justify-center space-x-6 mb-4">
-    <a href="#" class="text-[#E0EDE9] hover:text-[#84BABF]" aria-label="WhatsApp">WhatsApp</a>
-    <a href="#" class="text-[#E0EDE9] hover:text-[#84BABF]" aria-label="Email">Email</a>
-    <a href="#" class="text-[#E0EDE9] hover:text-[#84BABF]" aria-label="Helpline">Helpline</a>
-   </div>
-   <div class="flex justify-center">
-    <input type="email" class="p-2 rounded-l-md border-none focus:outline-none" id="newsletter-input" aria-label="Newsletter Email">
-    <button class="p-2 text-[#FFFFFF] rounded-r-md hover:shadow-[0_0_20px_rgba(13,111,115,0.8)]" aria-label="Join Newsletter">Join</button>
-   </div>
-   <div class="hidden" id="newsletter-placeholder">
-    <span data-lang="en">Join our newsletter</span>
-    <span data-lang="kn">ನಮ್ಮ ಸುದ್ದಿಪತ್ರಕ್ಕೆ ಸೇರಿಕೊಳ್ಳಿ</span>
-    <span data-lang="ur">ہمارے نیوز لیٹر میں شامل ہوں</span>
-    <span data-lang="hi">हमारे न्यूज़लेटर में शामिल हों</span>
-   </div>
-   <p class="mt-4 text-sm text-[#E0EDE9] hero-text">© 2025 Skin Cancer AI</p>
-  </div>
- </footer>
-
- <script>
-  // Particle Animation
-  const particleContainer = document.getElementById('particles');
-  for (let i = 0; i < 12; i++) {
-   const particle = document.createElement('div');
-   particle.className = 'particle';
-   particle.style.left = `${Math.random() * 100}vw`;
-   particle.style.animationDelay = `${Math.random() * 10}s`;
-   particleContainer.appendChild(particle);
-  }
-
-  // GSAP Animations
-  gsap.from("header", { y: -100, opacity: 0, duration: 1, ease: "power2.out" });
-  gsap.from(".multilingual-text", { opacity: 0, x: -50, duration: 1.2, ease: "elastic.out", delay: 0.5 });
-  gsap.from(".cta-button", { scale: 0, duration: 0.8, ease: "elastic.out", delay: 1 });
-  gsap.from(".feature-card", { opacity: 0, y: 50, duration: 0.8, stagger: 0.15, delay: 1.5, ease: "power2.out" });
-
-  // Multilingual Elements
-  const multilingualText = document.querySelectorAll('#multilingual-text span');
-  const headerTagline = document.querySelectorAll('#header-tagline span');
-  const footerTagline = document.querySelectorAll('footer .hero-text');
-  const newsletterPlaceholder = document.querySelectorAll('#newsletter-placeholder span');
-  const featureCards = document.querySelectorAll('.feature-card');
-  let currentLangIndex = 0;
-
-  function switchLanguage(lang) {
-   multilingualText.forEach(span => {
-    span.classList.toggle('hidden', span.getAttribute('data-lang') !== lang);
-    if (span.getAttribute('data-lang') === lang) {
-     gsap.fromTo(span, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" });
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant Disease AI - Empowering Farmers with AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+Kannada:wght@400;700&family=Amiri:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #138808, #FF9933); /* Green to Orange */
+      font-family: 'Orbitron', 'Noto Sans Kannada', 'Amiri', 'Noto Sans Devanagari', sans-serif;
+      color: #FFFFFF; /* Pure white */
     }
-   });
-   headerTagline.forEach(span => {
-    span.classList.toggle('hidden', span.getAttribute('data-lang') !== lang);
-   });
-   footerTagline.forEach(span => {
-    span.classList.toggle('hidden', span.getAttribute('data-lang') !== lang);
-   });
-   const placeholderSpan = Array.from(newsletterPlaceholder).find(s => s.getAttribute('data-lang') === lang);
-   document.getElementById('newsletter-input').placeholder = placeholderSpan ? placeholderSpan.textContent : 'Join our newsletter';
-   featureCards.forEach(card => {
-    card.querySelectorAll('[data-lang]').forEach(el => {
-     el.classList.toggle('hidden', el.getAttribute('data-lang') !== lang);
+    video#bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.7) contrast(1.2);
+      animation: scanline 10s infinite;
+    }
+    @keyframes scanline {
+      0%, 100% { filter: brightness(0.7) contrast(1.2); }
+      50% { filter: brightness(0.8) contrast(1.3); }
+    }
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(45deg, rgba(19, 136, 8, 0.3), rgba(255, 153, 51, 0.3)); /* Green to Orange */
+      z-index: -1;
+      opacity: 0.4;
+      animation: overlayPulse 8s infinite;
+    }
+    @keyframes overlayPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.6; }
+    }
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: left;
+      padding: 6rem 2rem 2rem;
+    }
+    .hero-text {
+      background: rgba(19, 136, 8, 0.8); /* Green */
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-shadow: 0 2px 4px rgba(19, 136, 8, 0.8); /* Green */
+      box-shadow: 0 0 15px rgba(255, 153, 51, 0.6); /* Orange */
+      border: 1px solid rgba(255, 153, 51, 0.3); /* Orange */
+      animation: neonPulse 2s infinite alternate;
+    }
+    @keyframes neonPulse {
+      0% { box-shadow: 0 0 15px rgba(255, 153, 51, 0.6), 0 0 25px rgba(255, 255, 255, 0.5); } /* Orange, Pure white */
+      100% { box-shadow: 0 0 25px rgba(255, 153, 51, 0.8), 0 0 35px rgba(255, 255, 255, 0.7); } /* Orange, Pure white */
+    }
+    .multilingual-text {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 900;
+      color: #FFFFFF; /* Pure white */
+      text-shadow: 0 0 15px #FF9933, 0 0 25px #FF9933; /* Orange */
+      font-family: 'Orbitron', 'Noto Sans Kannada', 'Amiri', 'Noto Sans Devanagari', sans-serif;
+      letter-spacing: 1px;
+      border: 1px solid rgba(255, 153, 51, 0.5); /* Orange */
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      background: rgba(19, 136, 8, 0.8); /* Green */
+      margin: 0.5rem 0;
+      margin-top: 12rem;
+      max-width: 80%;
+    }
+    .multilingual-text span {
+      animation: none; /* No animation on spans */
+    }
+    @media (min-width: 768px) {
+      .multilingual-text {
+        font-size: 1.5rem;
+        line-height: 2rem;
+      }
+    }
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+      font-weight: 700;
+      color: #FFFFFF; /* Pure white */
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Pure white */
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background: #FF9933; /* Orange */
+      box-shadow: 0 0 10px #FF9933; /* Orange */
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .nav-link:hover {
+      color: #FF9933; /* Orange */
+      text-shadow: 0 0 15px #FF9933; /* Orange */
+    }
+    .nav-link.active {
+      color: #FF9933; /* Orange */
+      text-shadow: 0 0 15px #FF9933; /* Orange */
+    }
+    .cta-button {
+      background: linear-gradient(45deg, #FF9933, #FFFFFF); /* Orange to Pure white */
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 900;
+      color: #138808; /* Green */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* Pure white */
+      animation: neonPulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); } /* Pure white */
+      50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 255, 255, 0.8); } /* Pure white */
+    }
+    .cta-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 1); /* Pure white */
+    }
+    .header-glow {
+      animation: neonPulse 2s infinite alternate;
+    }
+    .particle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #FF9933; /* Orange */
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: float 12s infinite;
+      z-index: 0;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0.8; }
+      50% { opacity: 0.4; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+    .karnataka-map {
+      position: absolute;
+      bottom: 10%;
+      right: 10%;
+      width: 150px;
+      height: 150px;
+      opacity: 0.3;
+      background: url('/static/images/karnataka-map.png') no-repeat center;
+      background-size: contain;
+      animation: mapPulse 5s infinite;
+    }
+    @keyframes mapPulse {
+      0% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.05); }
+      100% { opacity: 0.3; transform: scale(1); }
+    }
+    .bidar-pin {
+      position: absolute;
+      bottom: 15%;
+      right: 15%;
+      width: 15px;
+      height: 15px;
+      background: #FF9933; /* Orange */
+      border-radius: 50%;
+      box-shadow: 0 0 10px #FF9933; /* Orange */
+      animation: pinGlow 2s infinite alternate;
+    }
+    @keyframes pinGlow {
+      0% { box-shadow: 0 0 10px #FF9933; } /* Orange */
+      100% { box-shadow: 0 0 20px #FF9933; } /* Orange */
+    }
+    .feature-card {
+      background: rgba(19, 136, 8, 0.8); /* Green */
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem;
+      max-width: 280px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255, 153, 51, 0.3); /* Orange */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 153, 51, 0.3); /* Orange */
+    }
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Pure white */
+    }
+    .feature-card h3 {
+      color: #FFFFFF; /* Pure white */
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.6); /* Pure white */
+      font-size: 1.2rem;
+    }
+    .feature-card p {
+      color: #FFFFFF; /* Pure white */
+      font-size: 0.85rem;
+    }
+    .feature-card a {
+      color: #FF9933; /* Orange */
+      font-weight: 700;
+      transition: color 0.3s ease;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Pure white */
+    }
+    .feature-card a:hover {
+      color: #FFFFFF; /* Pure white */
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Pure white */
+    }
+    .content-section {
+      position: relative;
+      z-index: 1;
+      padding: 2rem 1rem;
+      background: rgba(19, 136, 8, 0.8); /* Green */
+      border-top: 1px solid rgba(255, 153, 51, 0.3); /* Orange */
+    }
+    .language-toggle span {
+      cursor: pointer;
+      transition: color 0.3s ease;
+      font-weight: 700;
+      color: #FFFFFF; /* Pure white */
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Pure white */
+    }
+    .language-toggle span:hover {
+      color: #FF9933; /* Orange */
+      text-shadow: 0 0 10px #FF9933; /* Orange */
+    }
+    .language-toggle .active {
+      color: #FF9933; /* Orange */
+      text-shadow: 0 0 10px #FF9933; /* Orange */
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="https://v.ftcdn.net/11/21/04/01/700_F_1121040159_QnjGABJFVS2VIahkaCSwm2x8wbZFrT9F_ST.mp4" type="video/mp4">
+    <img src="/static/images/fallback-plant-disease.jpg" alt="Fallback Plant Disease Image">
+  </video>
+  <div class="video-overlay"></div>
+  <div class="karnataka-map">
+    <div class="bidar-pin"></div>
+  </div>
+
+  <header class="fixed top-0 left-0 w-full bg-[#138808] bg-opacity-90 z-20 py-4 px-6 flex items-center justify-between"> <!-- Green -->
+    <div class="flex items-center">
+      <div class="flex flex-col items-start">
+        <h1 class="text-lg font-bold text-[#FFFFFF] text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);">Plant Disease AI</h1> <!-- Pure white -->
+        <p class="text-sm text-[#FFFFFF]" id="header-tagline"> <!-- Pure white -->
+          <span data-lang="en">Empowering Farmers with AI</span>
+          <span data-lang="kn" class="hidden">ರೈತರನ್ನು AI ನೊಂದಿಗೆ ಸಶಕ್ತಗೊಳಿಸುವುದು</span>
+          <span data-lang="ur" class="hidden">کسانوں کو AI کے ساتھ بااختیار بنانا</span>
+          <span data-lang="hi" class="hidden">किसानों को AI के साथ सशक्त करना</span>
+        </p>
+      </div>
+    </div>
+    <nav class="flex space-x-4">
+      <a href="/" class="nav-link active" aria-label="Home">Home</a>
+      <a href="/plant-health" class="nav-link" aria-label="Plant Health">Plant Health</a>
+      <a href="/prediction" class="nav-link" aria-label="Prediction">Prediction</a>
+      <a href="/dashboard" class="nav-link" aria-label="Dashboard">Dashboard</a>
+      <a href="/agri-experts" class="nav-link" aria-label="Agri Experts">Agri Experts</a>
+      <a href="/forecast" class="nav-link" aria-label="Forecast">Forecast</a>
+      <a href="/learning-center" class="nav-link" aria-label="Learning Center">Learning Center</a>
+      <a href="/community" class="nav-link" aria-label="Community">Community</a>
+      <a href="/about" class="nav-link" aria-label="About">About</a>
+    </nav>
+    <div class="language-toggle">
+      <span data-lang="en" class="active" aria-label="English">EN</span> |
+      <span data-lang="kn" aria-label="Kannada">ಕ</span> |
+      <span data-lang="ur" aria-label="Urdu">اردو</span> |
+      <span data-lang="hi" aria-label="Hindi">हि</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div id="particles" class="absolute inset-0 z-0"></div>
+    <div class="multilingual-text" id="multilingual-text">
+      <span data-lang="en">Next-Gen Plant Disease Diagnosis with Gen-AI and Deep Learning</span>
+      <span data-lang="kn" class="hidden">ಮುಂದಿನ ತಲೆಮಾರಿನ ಸಸ್ಯ ರೋಗ ನಿರ್ಣಯ ಜನರೇಟಿವ್ ಎಐ ಮತ್ತು ಡೀಪ್ ಲರ್ನಿಂಗ್ ಸಹಿತ</span>
+      <span data-lang="ur" class="hidden">جدید نسل کی پودوں کی بیماری کی تشخیص جنریٹیو اے آئی اور ڈیپ لرننگ کے ساتھ</span>
+      <span data-lang="hi" class="hidden">नई पीढ़ी का पौध रोग निदान जेनेरेटिव एआई और डीप लर्निंग के साथ</span>
+    </div>
+    <a href="/prediction" class="cta-button text-[#138808] text-base" aria-label="Check Plant Health Now">Check Plant Health Now</a> <!-- Green -->
+  </section>
+
+  <section class="content-section">
+    <div class="max-w-6xl mx-auto flex flex-wrap justify-center">
+      <div class="feature-card">
+        <h3 data-lang="en">Plant Health</h3>
+        <h3 data-lang="kn" class="hidden">ಸಸ್ಯ ಆರೋಗ್ಯ</h3>
+        <h3 data-lang="ur" class="hidden">پودوں کی صحت</h3>
+        <h3 data-lang="hi" class="hidden">पौधों का स्वास्थ्य</h3>
+        <p data-lang="en">Learn about plant health tips tailored for farmers.</p>
+        <p data-lang="kn" class="hidden">ರೈತರಿಗೆ ತಕ್ಕಂತೆ ಸಸ್ಯ ಆರೋಗ್ಯ ಸಲಹೆಗಳ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ.</p>
+        <p data-lang="ur" class="hidden">کسانوں کے لئے تیار کردہ پودوں کی صحت کے نکات کے بارے میں جانیں۔</p>
+        <p data-lang="hi" class="hidden">किसानों के लिए अनुकूलित पौधों के स्वास्थ्य सुझावों के बारे में जानें।</p>
+        <a href="/plant-health" class="text-[#FF9933] hover:text-[#FFFFFF] text-sm font-bold" aria-label="Learn Plant Health">Learn Plant Health</a> <!-- Orange to Pure white -->
+      </div>
+      <div class="feature-card">
+        <h3 data-lang="en">Prediction</h3>
+        <h3 data-lang="kn" class="hidden">ಭವಿಷ್ಯವಾಣಿ</h3>
+        <h3 data-lang="ur" class="hidden">پیش گوئی</h3>
+        <h3 data-lang="hi" class="hidden">भविष्यवाणी</h3>
+        <p data-lang="en">Detect plant diseases with our deep learning model, trusted by farmers.</p>
+        <p data-lang="kn" class="hidden">ರೈತರಿಂದ ವಿಶ್ವಾಸಾರ್ಹವಾದ ನಮ್ಮ ಡೀಪ್ ಲರ್ನಿಂಗ್ ಮಾದರಿಯೊಂದಿಗೆ ಸಸ್ಯ ರೋಗಗಳನ್ನು ಗುರುತಿಸಿ.</p>
+        <p data-lang="ur" class="hidden">کسانوں کی طرف سے قابل اعتماد ہمارے ڈیپ لرننگ ماڈل کے ساتھ پودوں کی بیماریوں کی تشخیص کریں۔</p>
+        <p data-lang="hi" class="hidden">किसानों द्वारा भरोसा किए गए हमारे डीप लर्निंग मॉडल के साथ पौधों के रोगों का पता लगाएं।</p>
+        <a href="/prediction" class="text-[#FF9933] hover:text-[#FFFFFF] text-sm font-bold" aria-label="Predict Now">Predict Now</a> <!-- Orange to Pure white -->
+      </div>
+      <div class="feature-card">
+        <h3 data-lang="en">Dashboard</h3>
+        <h3 data-lang="kn" class="hidden">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್</h3>
+        <h3 data-lang="ur" class="hidden">ڈیش بورڈ</h3>
+        <h3 data-lang="hi" class="hidden">डैशबोर्ड</h3>
+        <p data-lang="en">Track your crop health with a personalized dashboard for farmers.</p>
+        <p data-lang="kn" class="hidden">ರೈತರಿಗಾಗಿ ವೈಯಕ್ತಿಕಗೊಳಿಸಿದ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಬೆಳೆ ಆರೋಗ್ಯವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.</p>
+        <p data-lang="ur" class="hidden">کسانوں کے لئے ذاتی ڈیش بورڈ کے ساتھ اپنی فصل کی صحت کی نگرانی کریں۔</p>
+        <p data-lang="hi" class="hidden">किसानों के लिए व्यक्तिगत डैशबोर्ड के साथ अपनी फसल के स्वास्थ्य को ट्रैक करें।</p>
+        <a href="/dashboard" class="text-[#FF9933] hover:text-[#FFFFFF] text-sm font-bold" aria-label="View Dashboard">View Dashboard</a> <!-- Orange to Pure white -->
+      </div>
+      <div class="feature-card">
+        <h3 data-lang="en">Agri Experts</h3>
+        <h3 data-lang="kn" class="hidden">ಕೃಷಿ ತಜ್ಞರು</h3>
+        <h3 data-lang="ur" class="hidden">زرعی ماہرین</h3>
+        <h3 data-lang="hi" class="hidden">कृषि विशेषज्ञ</h3>
+        <p data-lang="en">Connect with top agricultural experts for crop disease advice.</p>
+        <p data-lang="kn" class="hidden">ಬೆಳೆ ರೋಗ ಸಲಹೆಗಾಗಿ ಉನ್ನತ ಕೃಷಿ ತಜ್ಞರೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಿ.</p>
+        <p data-lang="ur" class="hidden">فصلوں کی بیماریوں کے مشورے کے لئے اعلیٰ زرعی ماہرین سے رابطہ کریں۔</p>
+        <p data-lang="hi" class="hidden">फसल रोग सलाह के लिए शीर्ष कृषि विशेषज्ञों से संपर्क करें।</p>
+        <a href="/agri-experts" class="text-[#FF9933] hover:text-[#FFFFFF] text-sm font-bold" aria-label="Find Experts">Find Experts</a> <!-- Orange to Pure white -->
+      </div>
+      <div class="feature-card">
+        <h3 data-lang="en">Forecast</h3>
+        <h3 data-lang="kn" class="hidden">ಮುನ್ಸೂಚನೆ</h3>
+        <h3 data-lang="ur" class="hidden">پیشن گوئی</h3>
+        <h3 data-lang="hi" class="hidden">पूर्वानुमान</h3>
+        <p data-lang="en">Get weather and disease outbreak forecasts for farming.</p>
+        <p data-lang="kn" class="hidden">ಕೃಷಿಗಾಗಿ ಹವಾಮಾನ ಮತ್ತು ರೋಗ ಪಿಡುಗಿನ ಮುನ್ಸೂಚನೆಗಳನ್ನು ಪಡೆಯಿರಿ.</p>
+        <p data-lang="ur" class="hidden">کاشت کے لئے موسم اور بیماری کے پھیلاؤ کی پیشن گوئی حاصل کریں۔</p>
+        <p data-lang="hi" class="hidden">खेती के लिए मौसम और रोग प्रकोप के पूर्वानुमान प्राप्त करें।</p>
+        <a href="/forecast" class="text-[#FF9933] hover:text-[#FFFFFF] text-sm font-bold" aria-label="View Forecast">View Forecast</a> <!-- Orange to Pure white -->
+      </div>
+      <div class="feature-card">
+        <h3 data-lang="en">Learning Center</h3>
+        <h3 data-lang="kn" class="hidden">ಕಲಿಕೆ ಕೇಂದ್ರ</h3>
+        <h3 data-lang="ur" class="hidden">تعلیمی مرکز</h3>
+        <h3 data-lang="hi" class="hidden">शिक्षण केंद्र</h3>
+        <p data-lang="en">Access farming resources and AI-driven tips for plant health.</p>
+        <p data-lang="kn" class="hidden">ಸಸ್ಯ ಆರೋಗ್ಯಕ್ಕಾಗಿ ಕೃಷಿ ಸಂಪನ್ಮೂಲಗಳು ಮತ್ತು AI-ಚಾಲಿತ ಸಲಹೆಗಳನ್ನು ಪ್ರವೇಶಿಸಿ.</p>
+        <p data-lang="ur" class="hidden">پودوں کی صحت کے لئے کاشت کے وسائل اور AI سے چلنے والے نکات تک رسائی حاصل کریں۔</p>
+        <p data-lang="hi" class="hidden">पौधों के स्वास्थ्य के लिए खेती संसाधनों और AI-चालित सुझावों तक पहुंचें।</p>
+        <a href="/learning-center" class="text-[#FF9933] hover:text-[#FFFFFF] text-sm font-bold" aria-label="Learn More">Learn More</a> <!-- Orange to Pure white -->
+      </div>
+      <div class="feature-card">
+        <h3 data-lang="en">Community</h3>
+        <h3 data-lang="kn" class="hidden">ಸಮುದಾಯ</h3>
+        <h3 data-lang="ur" class="hidden">کمیونٹی</h3>
+        <h3 data-lang="hi" class="hidden">समुदाय</h3>
+        <p data-lang="en">Join the farming community to share and learn.</p>
+        <p data-lang="kn" class="hidden">ಹಂಚಿಕೊಳ್ಳಲು ಮತ್ತು ಕಲಿಯಲು ಕೃಷಿ ಸಮುದಾಯಕ್ಕೆ ಸೇರಿಕೊಳ್ಳಿ.</p>
+        <p data-lang="ur" class="hidden">اشتراک اور سیکھنے کے لئے کاشت کمیونٹی میں شامل ہوں۔</p>
+        <p data-lang="hi" class="hidden">साझा करने और सीखने के लिए खेती समुदाय में शामिल हों।</p>
+        <a href="/community" class="text-[#FF9933] hover:text-[#FFFFFF] text-sm font-bold" aria-label="Join Community">Join Community</a> <!-- Orange to Pure white -->
+      </div>
+      <div class="feature-card">
+        <h3 data-lang="en">About</h3>
+        <h3 data-lang="kn" class="hidden">ಬಗ್ಗೆ</h3>
+        <h3 data-lang="ur" class="hidden">کے بارے میں</h3>
+        <h3 data-lang="hi" class="hidden">के बारे में</h3>
+        <p data-lang="en">Learn about our mission to empower farming solutions.</p>
+        <p data-lang="kn" class="hidden">ಕೃಷಿ ಪರಿಹಾರಗಳನ್ನು ಸಶಕ್ತಗೊಳಿಸಲು ನಮ್ಮ ಧ್ಯೇಯದ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ.</p>
+        <p data-lang="ur" class="hidden">کاشت کے حل کو بااختیار بنانے کے ہمارے مشن کے بارے میں جانیں۔</p>
+        <p data-lang="hi" class="hidden">खेती समाधान को सशक्त बनाने के हमारे मिशन के बारे में जानें।</p>
+        <a href="/about" class="text-[#FF9933] hover:text-[#FFFFFF] text-sm font-bold" aria-label="About Us">About Us</a> <!-- Orange to Pure white -->
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-6 px-4 bg-[#138808] text-center relative z-10"> <!-- Green -->
+    <div class="max-w-6xl mx-auto">
+      <p class="text-md text-[#FFFFFF] mb-4 hero-text" data-lang="en">Empowering Farming Solutions with AI</p> <!-- Pure white -->
+      <p class="text-md text-[#FFFFFF] mb-4 hero-text hidden" data-lang="kn">AI ನೊಂದಿಗೆ ಕೃಷಿ ಪರಿಹಾರಗಳನ್ನು ಸಶಕ್ತಗೊಳಿಸುವುದು</p> <!-- Pure white -->
+      <p class="text-md text-[#FFFFFF] mb-4 hero-text hidden" data-lang="ur">AI کے ساتھ کاشت کے حل کو بااختیار بنانا</p> <!-- Pure white -->
+      <p class="text-md text-[#FFFFFF] mb-4 hero-text hidden" data-lang="hi">AI के साथ खेती समाधान को सशक्त बनाना</p> <!-- Pure white -->
+      <div class="flex justify-center space-x-6 mb-4">
+        <a href="#" class="text-[#FFFFFF] hover:text-[#FF9933] text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);" aria-label="WhatsApp">WhatsApp</a> <!-- Pure white to Orange -->
+        <a href="#" class="text-[#FFFFFF] hover:text-[#FF9933] text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);" aria-label="Email">Email</a> <!-- Pure white to Orange -->
+        <a href="#" class="text-[#FFFFFF] hover:text-[#FF9933] text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);" aria-label="Helpline">Helpline</a> <!-- Pure white to Orange -->
+      </div>
+      <div class="flex justify-center">
+        <input type="email" class="p-2 rounded-l-md bg-[#138808] text-[#FFFFFF] border-none focus:outline-none" id="newsletter-input" placeholder="Join our newsletter" aria-label="Newsletter Email"> <!-- Green, Pure white -->
+        <button class="p-2 bg-[#FF9933] text-[#138808] rounded-r-md hover:bg-[#FFFFFF] hover:shadow-[0_0_15px_rgba(255,255,255,0.7)]" aria-label="Join Newsletter">Join</button> <!-- Orange to Pure white, Green -->
+      </div>
+      <div class="hidden" id="newsletter-placeholder">
+        <span data-lang="en">Join our newsletter</span>
+        <span data-lang="kn">ನಮ್ಮ ಸುದ್ದಿಪತ್ರಕ್ಕೆ ಸೇರಿಕೊಳ್ಳಿ</span>
+        <span data-lang="ur">ہمارے نیوز لیٹر میں شامل ہوں</span>
+        <span data-lang="hi">हमारे न्यूज़लेटर में शामिल हों</span>
+      </div>
+      <p class="mt-4 text-sm text-[#FFFFFF] hero-text">© 2025 Plant Disease AI</p> <!-- Pure white -->
+    </div>
+  </footer>
+
+  <script>
+    // Particle Animation
+    const particleContainer = document.getElementById('particles');
+    for (let i = 0; i < 10; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = `${Math.random() * 100}vw`;
+      particle.style.animationDelay = `${Math.random() * 12}s`;
+      particleContainer.appendChild(particle);
+    }
+
+    // GSAP Animations
+    gsap.from("header", { y: -100, opacity: 0, duration: 1, ease: "power2.out" });
+    gsap.from(".multilingual-text", { opacity: 0, x: -50, duration: 1.2, ease: "elastic.out", delay: 0.5 });
+    gsap.from(".cta-button", { scale: 0, duration: 0.8, ease: "elastic.out", delay: 1 });
+    gsap.from(".feature-card", { opacity: 0, y: 50, duration: 0.8, stagger: 0.15, delay: 1.5, ease: "power2.out" });
+
+    // Language Toggle with No Blinking
+    const multilingualText = document.querySelectorAll('#multilingual-text span');
+    const headerTagline = document.querySelectorAll('#header-tagline span');
+    const footerTagline = document.querySelectorAll('footer .hero-text');
+    const newsletterPlaceholder = document.querySelectorAll('#newsletter-placeholder span');
+    const featureCards = document.querySelectorAll('.feature-card');
+    const languageToggles = document.querySelectorAll('.language-toggle span');
+
+    // Initialize with English
+    function setLanguage(lang) {
+      // Update multilingual text with smooth transition (no blinking)
+      multilingualText.forEach(span => {
+        const isVisible = span.getAttribute('data-lang') === lang;
+        span.classList.toggle('hidden', !isVisible);
+        if (isVisible) {
+          // Smooth appearance animation
+          gsap.fromTo(span,
+            { opacity: 0, x: -20 },
+            { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }
+          );
+        } else {
+          // Reset hidden spans
+          gsap.killTweensOf(span);
+          gsap.set(span, { opacity: 0, x: -20 });
+        }
+      });
+      // Update header tagline
+      headerTagline.forEach(span => {
+        span.classList.toggle('hidden', span.getAttribute('data-lang') !== lang);
+      });
+      // Update footer tagline
+      footerTagline.forEach(span => {
+        span.classList.toggle('hidden', span.getAttribute('data-lang') !== lang);
+      });
+      // Update newsletter placeholder
+      const placeholderText = Array.from(newsletterPlaceholder).find(span => span.getAttribute('data-lang') === lang).textContent;
+      document.getElementById('newsletter-input').placeholder = placeholderText;
+      // Update feature cards
+      featureCards.forEach(card => {
+        const elements = card.querySelectorAll('[data-lang]');
+        elements.forEach(el => {
+          el.classList.toggle('hidden', el.getAttribute('data-lang') !== lang);
+        });
+      });
+      // Update active toggle button
+      languageToggles.forEach(toggle => {
+        toggle.classList.toggle('active', toggle.getAttribute('data-lang') === lang);
+      });
+    }
+
+    // Set initial language to English
+    setLanguage('en');
+
+    // Language Toggle Event Listeners
+    languageToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const lang = toggle.getAttribute('data-lang');
+        setLanguage(lang);
+      });
     });
-   });
-   currentLangIndex = ['en', 'kn', 'ur', 'hi'].indexOf(lang);
-  }
 
-  // Default: English
-  switchLanguage('en');
-
-  // Language Toggle
-  document.querySelectorAll('.language-toggle span').forEach(toggle => {
-   toggle.addEventListener('click', () => {
-    const lang = toggle.getAttribute('data-lang');
-    switchLanguage(lang);
-   });
-  });
-
-  // Haptic Feedback
-  document.querySelector('.cta-button').addEventListener('touchstart', () => {
-   if (navigator.vibrate) navigator.vibrate(50);
-  });
- </script>
+    // Haptic Feedback for Mobile
+    document.querySelector('.cta-button').addEventListener('touchstart', () => {
+      if (navigator.vibrate) navigator.vibrate(50);
+    });
+  </script>
 </body>
 </html>
-</div>
